@@ -99,13 +99,13 @@ dd{margin:0;font-weight:500}
 .todo{font-style:italic}
 .imdbrow{display:flex;justify-content:flex-end;margin:0 0 .6rem}.imdbl{display:inline-flex;color:#111;transition:color .2s,transform .2s}.imdbl:hover{color:var(--key)}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .imdbl{color:#e3a935}:root:not([data-theme="light"]) .imdbl:hover{color:#fff}}:root[data-theme="dark"] .imdbl{color:#e3a935}:root[data-theme="dark"] .imdbl:hover{color:#fff}.imdbl svg{width:64px;height:32px}.imdbl:hover{transform:translateY(-1px)}
 .what.award{padding-right:130px}.what.award.two{padding-right:190px}.awards{position:absolute;right:66px;top:0;height:51px;display:flex;align-items:center;gap:.9rem}.awards .goya{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:.2rem;margin:0;color:#d4a62a;font:600 .7rem var(--body);letter-spacing:.08em;text-transform:uppercase}.goya b{font-weight:600}
-.rv{margin:1.8rem calc(50% - 50vw) 0;width:100vw;scroll-margin-top:62px}
+.rv{margin:1.8rem calc(50% - 50vw) 0;width:100vw;scroll-margin-top:62px;background:var(--bg);padding-bottom:1.5rem}
 .rv[hidden]{display:none}
 .rv-top,.rv-bar,.rv-text{max-width:1040px;margin-left:auto;margin-right:auto;padding-left:clamp(1.25rem,5vw,3rem);padding-right:clamp(1.25rem,5vw,3rem)}
 .rv-top{display:flex;align-items:center;justify-content:space-between;gap:1rem;margin-bottom:.8rem}
 .rv h3{margin:0;font:600 .85rem var(--display);letter-spacing:.04em}
-.rv-screen{aspect-ratio:16/9;width:min(100%,calc((100vh - 17rem)*1.7778));max-width:100%;margin:0 auto;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden}
-@supports (height:100svh){.rv-screen{width:min(100%,calc((100svh - 17rem)*1.7778))}}
+.rv-screen{aspect-ratio:16/9;width:min(100%,calc((100vh - 27rem)*1.7778),960px);max-width:100%;margin:0 auto;background:#000;display:flex;align-items:center;justify-content:center;overflow:hidden}
+@supports (height:100svh){.rv-screen{width:min(100%,calc((100svh - 27rem)*1.7778),960px)}}
 .rv-screen iframe{width:100%;height:100%;border:0}
 .rv-screen .outv{display:flex;flex-direction:column;align-items:center;gap:.7rem;color:#fff;text-decoration:none;font-weight:600;font-size:.9rem;padding:2rem}.rv-screen .outv:hover{color:var(--key)}
 .rv-screen .msg{color:#fff;text-align:center;padding:2rem;max-width:30rem}
