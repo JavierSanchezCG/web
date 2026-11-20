@@ -524,13 +524,17 @@ footer{border-top:2px dotted var(--line);padding:1.5rem 0;color:var(--dim);font-
     var R=rcurR||{},bd=R.breakdown||{};if(bd.es||bd.en)rvt.appendChild(genText(R));
     apply()
   }
+  var rvReg=null;
+  setInterval(function(){if(rv.hidden||!rshots.length||prov!=='vm')return;var f=rvs.querySelector('iframe');if(f&&f.contentWindow)try{f.contentWindow.postMessage(JSON.stringify({method:'getCurrentTime'}),'*')}catch(x){}},500);
   window.addEventListener('message',function(e){
     if(rv.hidden||!rshots.length)return;
     var f=rvs.querySelector('iframe');if(!f||e.source!==f.contentWindow)return;
     var dd=e.data;if(typeof dd==='string'){try{dd=JSON.parse(dd)}catch(x){return}}if(!dd)return;
+    if(dd.event==='ready'&&rvReg)rvReg();
     var t=null;
     if(dd.event==='infoDelivery'&&dd.info&&typeof dd.info.currentTime==='number')t=dd.info.currentTime;
     else if(dd.event==='timeupdate'&&dd.data&&typeof dd.data.seconds==='number')t=dd.data.seconds;
+    else if(dd.method==='getCurrentTime'&&typeof dd.value==='number')t=dd.value;
     if(t===null)return;
     var k=-1;rshots.forEach(function(o,i){if(t>=o.a&&t<o.b)k=i});if(k>=0)showShot(k)
   });
@@ -545,10 +549,13 @@ footer{border-top:2px dotted var(--line);padding:1.5rem 0;color:var(--dim);font-
     rvh.textContent=cards[i].querySelector('h3').textContent;
     rshot=-1;buildShots(R);
     if(rshots.length)showShot(0);else{rvt.innerHTML='';rvt.appendChild(genText(R))}
-    var fr=rvs.querySelector('iframe');if(fr)fr.addEventListener('load',function(){
-      try{if(prov==='yt')fr.contentWindow.postMessage(JSON.stringify({event:'listening',id:1,channel:'widget'}),'*');
-      else if(prov==='vm')['timeupdate','play','pause'].forEach(function(ev){fr.contentWindow.postMessage(JSON.stringify({method:'addEventListener',value:ev}),'*')})}catch(x){}
-    });
+    var fr=rvs.querySelector('iframe');if(fr)var pv0=prov,reg=function(){
+      if(!fr.isConnected)return;
+      try{if(pv0==='yt')fr.contentWindow.postMessage(JSON.stringify({event:'listening',id:1,channel:'widget'}),'*');
+      else if(pv0==='vm')['timeupdate','play','pause'].forEach(function(ev){fr.contentWindow.postMessage(JSON.stringify({method:'addEventListener',value:ev}),'*')})}catch(x){}
+    };
+    fr.addEventListener('load',function(){reg();[400,1200,2500,5000].forEach(function(ms){setTimeout(reg,ms)})});
+    rvReg=reg;
     cards.forEach(function(c,k){c.classList.toggle('on',k===i)});
     rv.hidden=false;apply();
     rv.scrollIntoView({behavior:'smooth',block:'start'})
