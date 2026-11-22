@@ -913,5 +913,38 @@ DATA.projects.forEach(function(p){if(p.cat===ci){var ce=card(p);ce.__p=p;gr.appe
     document.addEventListener(ev,function(e){var t=e.target;if(t&&t.closest&&t.closest('.reel,.card,.schb,#schoolbox,#reel'))warm()},{capture:true,passive:true})})
 })();
 </script>
+<script>
+/* Solo un vídeo a la vez: si uno empieza a reproducirse, los demás se pausan */
+(function(){
+  var RX=/youtube(?:-nocookie)?\.com\/embed|player\.vimeo\.com\/video/;
+  function vids(){return [].slice.call(document.querySelectorAll('iframe')).filter(function(f){return RX.test(f.src)&&f.getAttribute('aria-hidden')!=='true'})}
+  window.__vgPost=function(f,msg){try{f.contentWindow.postMessage(msg,'*')}catch(x){}};
+  function listen(f){
+    if(!f||!RX.test(f.src))return;
+    if(/youtube/.test(f.src))window.__vgPost(f,JSON.stringify({event:'listening',id:1,channel:'widget'}));
+    else window.__vgPost(f,JSON.stringify({method:'addEventListener',value:'play'}));
+  }
+  function pauseOthers(src){
+    vids().forEach(function(f){
+      if(f.contentWindow===src)return;
+      if(/youtube/.test(f.src))window.__vgPost(f,JSON.stringify({event:'command',func:'pauseVideo',args:[]}));
+      else window.__vgPost(f,JSON.stringify({method:'pause'}))
+    })
+  }
+  window.addEventListener('message',function(e){
+    var d=e.data;if(typeof d==='string'){try{d=JSON.parse(d)}catch(x){return}}
+    if(!d||typeof d!=='object')return;
+    var playing=false;
+    if(d.event==='infoDelivery'&&d.info&&d.info.playerState===1)playing=true;
+    else if(d.event==='onStateChange'&&d.info===1)playing=true;
+    else if(d.event==='play')playing=true;
+    if(playing)pauseOthers(e.source)
+  });
+  document.addEventListener('load',function(e){
+    var f=e.target;if(!f||f.tagName!=='IFRAME')return;
+    [0,400,1500,3500].forEach(function(t){setTimeout(function(){listen(f)},t)})
+  },true);
+})();
+</script>
 </body>
 </html>
