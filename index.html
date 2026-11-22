@@ -4,6 +4,12 @@
 <meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com data:; img-src 'self' data: blob:; media-src 'self' data: blob:; frame-src https://www.youtube.com https://www.youtube-nocookie.com https://player.vimeo.com; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; manifest-src 'none'; worker-src 'none'">
 <meta name="referrer" content="strict-origin-when-cross-origin">
+<link rel="preconnect" href="https://www.youtube.com">
+<link rel="preconnect" href="https://i.ytimg.com">
+<link rel="preconnect" href="https://player.vimeo.com">
+<link rel="preconnect" href="https://f.vimeocdn.com" crossorigin>
+<link rel="dns-prefetch" href="https://www.google.com">
+<link rel="dns-prefetch" href="https://i.vimeocdn.com">
 
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Javier Sánchez Garrido | Lighting TD & Compositing</title>
@@ -206,6 +212,11 @@ img.poster{display:block;width:36px;height:51px;aspect-ratio:auto;object-fit:cov
 :root[data-theme="dark"] .cos.sch .schb img{filter:none}:root[data-theme="dark"] .cos.sch li,:root[data-theme="dark"] .cos.sch li:hover,:root[data-theme="dark"] .cos.sch li.on{border-color:transparent}
 .cos li:hover{color:var(--key);border-color:var(--key)}
 .cos:not(.sch) li,.cos:not(.sch) li:hover{border-color:transparent}
+.rv-screen,.vfig{position:relative}
+.rv-screen::before,.vfig::before{content:"";position:absolute;left:50%;top:50%;width:34px;height:34px;margin:-17px 0 0 -17px;border:3px solid rgba(255,255,255,.25);border-top-color:#fff;border-radius:50%;animation:vspin .8s linear infinite}
+@keyframes vspin{to{transform:rotate(360deg)}}
+.rv-screen iframe,.vfig iframe{position:relative;z-index:1;opacity:0;transition:opacity .25s}
+.rv-screen iframe.lv,.vfig iframe.lv{opacity:1}
 .vfig{aspect-ratio:16/9;width:min(100%,720px);background:#000;margin:1.2rem 0}
 .vfig iframe{display:block;width:100%;height:100%;border:0;background:#000;color-scheme:light}
 .vfig a{display:flex;align-items:center;justify-content:center;width:100%;height:100%;color:#fff}
@@ -875,6 +886,31 @@ DATA.projects.forEach(function(p){if(p.cat===ci){var ce=card(p);ce.__p=p;gr.appe
   document.addEventListener('click',function(e){var a=e.target.closest&&e.target.closest('a[href^="#"]');if(a&&(/^#w\d$/.test(a.getAttribute('href'))))show('prod')},true);
   window.addEventListener('hashchange',function(){if(/^#(w\d|p-.*)$/.test(location.hash))show('prod')});
   if(/^#(w\d|p-.*)$/.test(location.hash))show('prod');
+})();
+</script>
+<script>
+(function(){
+  document.addEventListener('load',function(e){var t=e.target;if(t&&t.tagName==='IFRAME')t.classList.add('lv')},true);
+  new MutationObserver(function(ms){ms.forEach(function(m){m.addedNodes.forEach(function(n){
+    var fs=n.nodeType===1?(n.tagName==='IFRAME'?[n]:[].slice.call(n.querySelectorAll('iframe'))):[];
+    fs.forEach(function(f){setTimeout(function(){f.classList.add('lv')},6000)})})})}).observe(document.documentElement,{childList:true,subtree:true});
+  var warmed=false;
+  function warm(){
+    if(warmed)return;warmed=true;
+    try{
+      var D=JSON.parse(document.getElementById('cms-data').textContent),urls=[];
+      (D.reels||[]).forEach(function(r){if(r.url)urls.push(r.url)});
+      var yt=urls.filter(function(u){return /youtu/.test(u)})[0],vm=urls.filter(function(u){return /vimeo/.test(u)})[0],src=[];
+      var m;if(yt&&(m=yt.match(/(?:youtu\.be\/|v=|embed\/)([\w-]{11})/)))src.push('https://www.youtube.com/embed/'+m[1]+'?autoplay=0&rel=0&enablejsapi=1');
+      if(vm&&(m=vm.match(/vimeo\.com\/(?:video\/)?(\d+)/)))src.push('https://player.vimeo.com/video/'+m[1]+'?autoplay=0');
+      src.forEach(function(u){
+        var f=document.createElement('iframe');f.setAttribute('sandbox','allow-scripts allow-same-origin allow-presentation');f.setAttribute('aria-hidden','true');f.tabIndex=-1;
+        f.style.cssText='position:fixed;left:-9999px;top:0;width:320px;height:180px;border:0;opacity:0;pointer-events:none';
+        f.src=u;document.body.appendChild(f);setTimeout(function(){f.remove()},12000)})
+    }catch(x){}
+  }
+  ['pointerover','touchstart','focusin'].forEach(function(ev){
+    document.addEventListener(ev,function(e){var t=e.target;if(t&&t.closest&&t.closest('.reel,.card,.schb,#schoolbox,#reel'))warm()},{capture:true,passive:true})})
 })();
 </script>
 </body>
