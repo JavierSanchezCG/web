@@ -368,7 +368,6 @@ footer{border-top:2px dotted var(--line);padding:1.5rem 0;color:var(--dim);font-
       <a href="#sobre" data-es="Sobre mí" data-en="About">Sobre mí</a>
       <div class="dd"><a href="#trabajo" data-es="Trabajo" data-en="Work">Trabajo</a><button class="ddb" id="ddb" type="button" aria-label="Secciones de trabajo / Work sections" aria-expanded="false">▾</button><div class="ddm" id="ddm"></div></div>
       <a href="#experiencia" data-es="Experiencia" data-en="Experience">Experiencia</a>
-      <a href="#blog">Blog</a>
       <a href="#docencia" data-es="Docencia" data-en="Teaching">Docencia</a>
       
     </nav>
@@ -460,10 +459,7 @@ footer{border-top:2px dotted var(--line);padding:1.5rem 0;color:var(--dim);font-
   </ol>
 </div></section>
 
-<section id="blog"><div class="wrap">
-  <h2>Blog</h2>
-  <div class="posts" id="postlist"></div>
-</div></section>
+<section id="blog" hidden><div class="wrap"><div class="posts" id="postlist"></div></div></section>
 
 <section id="docencia"><div class="wrap">
   <h2 data-es="Docencia" data-en="Teaching">Docencia</h2>
@@ -826,7 +822,7 @@ DATA.projects.forEach(function(p){if(p.cat===ci){var ce=card(p);ce.__p=p;gr.appe
     ui.innerHTML='';ui.appendChild(box)
   }
   function lista(){
-    var arr=DATA[tab],box=h('div','cbox',{},[h('h2','',{},['Contenido']),cb('Proyectos',function(){tab='projects';lista()},tab==='projects'?'main':''),cb('Blog',function(){tab='posts';lista()},tab==='posts'?'main':''),cb('Empresas',function(){tab='companies';lista()},tab==='companies'?'main':''),cb('Docencia',function(){tab='schools';lista()},tab==='schools'?'main':''),cb('Reels',function(){tab='reels';lista()},tab==='reels'?'main':''),cb('CV',function(){formCV()})]);
+    var arr=DATA[tab],box=h('div','cbox',{},[h('h2','',{},['Contenido']),cb('Proyectos',function(){tab='projects';lista()},tab==='projects'?'main':''),cb('Empresas',function(){tab='companies';lista()},tab==='companies'?'main':''),cb('Docencia',function(){tab='schools';lista()},tab==='schools'?'main':''),cb('Reels',function(){tab='reels';lista()},tab==='reels'?'main':''),cb('CV',function(){formCV()})]);
     arr.forEach(function(p,i){box.appendChild(h('div','crow',{},[h('span','',{},[(tab==='projects'?CATS[p.cat].split(' - ')[0]+' · ':'')+((p.title?(p.title.es||p.title.en):p.name)||'(sin título)')]),h('span','',{},[cb('Editar',function(){cur=p;form()}),cb('Borrar',function(){if(tab!=='reels'&&confirm('¿Borrar esta entrada?')){arr.splice(i,1);lista()}})])]))});
     box.appendChild(h('div','',{},[cb('+ Nuevo',function(){if(tab==='reels')return;var n=(tab==='companies'||tab==='schools')?{name:'',logo:'',url:''}:tab==='projects'?{cat:0,title:{es:'',en:''},role:{es:'',en:''},desc:{es:'',en:''},tags:[],img:'',yt:'',blocks:[]}:{title:{es:'',en:''},date:{es:'',en:''},summary:{es:'',en:''},blocks:[]};arr.push(n);cur=n;form()}),cb('Guardar y publicar',save,'main'),cb('Cerrar',closeCMS)]));
     ui.innerHTML='';ui.appendChild(box)
